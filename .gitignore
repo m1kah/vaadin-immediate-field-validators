@@ -1,0 +1,4 @@
+.idea/
+vaadin-spring-with-aspect.iml
+target/
+*.iml

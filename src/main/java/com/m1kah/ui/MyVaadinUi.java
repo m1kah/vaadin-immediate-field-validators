@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2013 Mika Hämäläinen
+Copyright (c) 2014 Mika Hämäläinen
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -32,6 +32,10 @@ import javax.servlet.annotation.WebServlet;
 
 @Theme("valo")
 public class MyVaadinUi extends UI {
+    private FormLayout form;
+    private TextField userInput;
+    private TextField additionalInfoField;
+    private Button submitButton;
 
     @WebServlet(value = "/*", asyncSupported = true)
     @VaadinServletConfiguration(productionMode = false, ui = MyVaadinUi.class)
@@ -40,28 +44,33 @@ public class MyVaadinUi extends UI {
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
-        FormLayout form = new FormLayout();
-        form.setMargin(true);
-        form.addComponent(createRequiredTextField("User input"));
-        form.addComponent(createTextField("Additional info"));
-        form.addComponent(createButton("Submit"));
+        initComponent();
+        initLayout();
+        initListeners();
         setContent(form);
     }
 
-    private Component createRequiredTextField(String caption) {
-        TextField textField = createTextField(caption);
-        textField.setRequired(true);
-        textField.setRequiredError("This input is mandatory!");
-        return textField;
+    private void initComponent() {
+        userInput = UiFactory.createRequiredTextField("User input");
+        additionalInfoField = UiFactory.createTextField("Additional info");
+        submitButton = UiFactory.createButton("Submit");
     }
 
-    private TextField createTextField(String caption) {
-        TextField textField = new TextField(caption);
-        textField.setImmediate(true);
-        return textField;
+    private void initLayout() {
+        form = new FormLayout();
+        form.setMargin(true);
+        form.addComponent(userInput);
+        form.addComponent(additionalInfoField);
+        form.addComponent(submitButton);
     }
 
-    private Button createButton(String caption) {
-        return new Button(caption);
+    private void initListeners() {
+        submitButton.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+                userInput.setValidationVisible(true);
+            }
+        });
     }
+
 }
